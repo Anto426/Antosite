@@ -1,0 +1,104 @@
+/* =========================
+   Main Stylesheet - Modular CSS
+   =========================
+   This file imports all modular CSS components
+   for the Antosite portfolio website.
+   ========================= */
+
+/* Base styles */
+@import url('./base/variables.css');
+@import url('./base/reset.css');
+@import url('./base/typography.css');
+@import url('./base/gpu-optimizations.css');
+@import url('./base/performance.css');
+
+/* Layout styles */
+@import url('./layouts/grid.css');
+
+/* Component styles */
+@import url('./base/optimized-animations.css');
+@import url('./components/hero.css');
+@import url('./components/skills.css');
+@import url('./components/projects.css');
+@import url('./components/sections.css');
+@import url('./components/loading.css');
+@import url('./components/navigation.css');
+@import url('./components/error.css');
+@import url('./components/footer.css');
+@import url('./components/scroll-progress.css');
+
+/* Utility classes */
+@import url('./base/optimized-utilities.css');
+
+/* App-level layout adjustments */
+/* Background canvas - full page */
+.background {
+   position: fixed;
+   inset: 0;
+   width: 100vw;
+   height: 100vh;
+   z-index: 0;
+   pointer-events: none;
+   display: block;
+}
+
+/* Ensure main app content is layered above the background - NO CENTER CONSTRAINT */
+.main {
+   position: relative;
+   z-index: 1;
+   display: block; /* Cambiato da grid a block per evitare troncature */
+   min-height: 100vh;
+   width: 100%;
+   max-width: 100vw;
+   margin: 0;
+   padding: 0;
+   border: 0;
+   outline: 0;
+   overflow: visible; /* Assicura che il contenuto non venga nascosto */
+}
+
+.main-content {
+   width: 100%;
+   max-width: 100vw;
+   overflow-x: hidden;
+   margin: 0;
+   padding: 0;
+   border: 0;
+   outline: 0;
+   height: auto; /* Permette espansione automatica */
+   min-height: 100vh; /* Ma mantiene il minimo */
+}
+
+/* General layout improvements for better spacing and centering */
+body {
+   line-height: 1.6;
+   -webkit-font-smoothing: antialiased;
+   -moz-osx-font-smoothing: grayscale;
+   margin: 0;
+   padding: 0;
+   width: 100%;
+   min-height: 100vh;
+   overflow-x: hidden;
+   position: relative;
+}
+
+html {
+   overflow-x: hidden;
+   scroll-behavior: smooth;
+}
+
+/* Improve overall section spacing and readability */
+section {
+   margin-bottom: var(--space-6);
+}
+
+section:last-of-type {
+   margin-bottom: var(--space-4);
+}
+
+/* Enhanced focus states for accessibility */
+*:focus-visible {
+   outline: 2px solid var(--color-primary);
+   outline-offset: 2px;
+   border-radius: var(--border-radius-sm);
+}
