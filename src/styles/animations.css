@@ -227,19 +227,19 @@
 
 /* Animation utility classes */
 .animate-fadeInUp {
-  animation: fadeInUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  animation: fadeInUp var(--animation-duration-normal) cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
 .animate-slideInLeft {
-  animation: slideInLeft 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  animation: slideInLeft var(--animation-duration-normal) cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
 .animate-slideInRight {
-  animation: slideInRight 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  animation: slideInRight var(--animation-duration-normal) cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
 .animate-bounceIn {
-  animation: bounceIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  animation: bounceIn var(--animation-duration-normal) cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
 .animate-scaleUp {

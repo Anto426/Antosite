@@ -520,8 +520,9 @@ export class App {
 
     const projectCards = document.querySelectorAll('.project-card');
     projectCards.forEach((card, index) => {
-      card.setAttribute('data-animate', 'slideInRight');
-      card.setAttribute('data-delay', (index * 150).toString());
+      // Usa la stessa animazione di apparizione delle altre sezioni
+      card.setAttribute('data-animate', 'fadeInUp');
+      card.setAttribute('data-delay', (index * 120).toString());
     });
 
     // Add parallax attributes to background elements

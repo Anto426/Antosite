@@ -1,0 +1,261 @@
+/* =========================
+   Centralized Responsive Breakpoints
+   All aspect-ratio and device-specific media queries
+   ========================= */
+
+/* ===================================
+   STANDARD BREAKPOINTS (width-based)
+   =================================== */
+
+/* Mobile first approach - base styles are mobile */
+
+/* Small mobile: <= 480px */
+@media (max-width: 480px) {
+  :root {
+    --current-breakpoint: 'xs';
+  }
+}
+
+/* Mobile: 481px - 767px */
+@media (min-width: 481px) and (max-width: 767px) {
+  :root {
+    --current-breakpoint: 'sm';
+  }
+}
+
+/* Tablet: 768px - 1024px */
+@media (min-width: 768px) and (max-width: 1024px) {
+  :root {
+    --current-breakpoint: 'md';
+  }
+}
+
+/* Desktop: 1025px - 1399px */
+@media (min-width: 1025px) and (max-width: 1399px) {
+  :root {
+    --current-breakpoint: 'lg';
+  }
+}
+
+/* Large desktop: 1400px - 1799px */
+@media (min-width: 1400px) and (max-width: 1799px) {
+  :root {
+    --current-breakpoint: 'xl';
+  }
+}
+
+/* Ultra-wide: 1800px - 2559px */
+@media (min-width: 1800px) and (max-width: 2559px) {
+  :root {
+    --current-breakpoint: '2xl';
+  }
+}
+
+/* 4K: 2560px - 3839px */
+@media (min-width: 2560px) and (max-width: 3839px) {
+  :root {
+    --current-breakpoint: '3xl';
+  }
+}
+
+/* 4K+: >= 3840px */
+@media (min-width: 3840px) {
+  :root {
+    --current-breakpoint: '4xl';
+  }
+}
+
+/* ===================================
+   ASPECT RATIO BREAKPOINTS
+   =================================== */
+
+/* 7:5 tablets (e.g., 3392x2400) - portrait or landscape */
+@media (aspect-ratio: 7/5) {
+  :root {
+    --current-aspect: '7-5';
+  }
+}
+
+/* Near 7:5 (1.30 - 1.50 aspect, catch UI bars/zoom variations) */
+@media (min-aspect-ratio: 130/100) and (max-aspect-ratio: 150/100) {
+  :root {
+    --current-aspect: 'near-7-5';
+  }
+}
+
+/* OnePlus Pad landscape: 1292x802-866 (aspect 1.49-1.61) */
+@media (min-width: 1280px) and (max-width: 1310px) and (min-height: 790px) and (max-height: 880px) and (orientation: landscape) {
+  :root {
+    --current-device: 'oneplus-pad-landscape';
+    --current-aspect: '1-49-1-61';
+  }
+}
+
+/* Wide tablets landscape (1.5 - 1.8 aspect) */
+@media (min-aspect-ratio: 150/100) and (max-aspect-ratio: 180/100) and (orientation: landscape) {
+  :root {
+    --current-aspect: 'wide-tablet-landscape';
+  }
+}
+
+/* Ultra-wide screens (> 2.0 aspect, e.g., 21:9, 32:9) */
+@media (min-aspect-ratio: 200/100) {
+  :root {
+    --current-aspect: 'ultra-wide';
+  }
+}
+
+/* ===================================
+   ORIENTATION BREAKPOINTS
+   =================================== */
+
+@media (orientation: portrait) {
+  :root {
+    --current-orientation: 'portrait';
+  }
+}
+
+@media (orientation: landscape) {
+  :root {
+    --current-orientation: 'landscape';
+  }
+}
+
+/* ===================================
+   HEIGHT-BASED BREAKPOINTS
+   (useful for small viewport heights)
+   =================================== */
+
+/* Very short viewport: <= 550px height */
+@media (max-height: 550px) {
+  :root {
+    --current-height: 'xs';
+  }
+}
+
+/* Short viewport: 551px - 620px height */
+@media (min-height: 551px) and (max-height: 620px) {
+  :root {
+    --current-height: 'sm';
+  }
+}
+
+/* Medium short: 621px - 700px height */
+@media (min-height: 621px) and (max-height: 700px) {
+  :root {
+    --current-height: 'md';
+  }
+}
+
+/* Medium: 701px - 820px height */
+@media (min-height: 701px) and (max-height: 820px) {
+  :root {
+    --current-height: 'lg';
+  }
+}
+
+/* Tall viewport: > 820px height */
+@media (min-height: 821px) {
+  :root {
+    --current-height: 'xl';
+  }
+}
+
+/* ===================================
+   SPECIFIC DEVICE COMBINATIONS
+   =================================== */
+
+/* iPad Pro 11" landscape (1194x834) */
+@media (min-width: 1180px) and (max-width: 1210px) and (min-height: 820px) and (max-height: 850px) and (orientation: landscape) {
+  :root {
+    --current-device: 'ipad-pro-11-landscape';
+  }
+}
+
+/* iPad Pro 12.9" landscape (1366x1024) */
+@media (min-width: 1350px) and (max-width: 1380px) and (min-height: 1010px) and (max-height: 1040px) and (orientation: landscape) {
+  :root {
+    --current-device: 'ipad-pro-12-landscape';
+  }
+}
+
+/* Small mobile landscape (common for older phones) */
+@media (max-width: 767px) and (max-height: 600px) and (orientation: landscape) {
+  :root {
+    --current-device: 'small-mobile-landscape';
+  }
+}
+
+/* ===================================
+   PIXEL DENSITY (DPR)
+   =================================== */
+
+/* Retina / High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  :root {
+    --current-dpi: 'retina';
+  }
+}
+
+/* Ultra high DPI (3x+) */
+@media (-webkit-min-device-pixel-ratio: 3), (min-resolution: 288dpi) {
+  :root {
+    --current-dpi: 'ultra-retina';
+  }
+}
+
+/* ===================================
+   ACCESSIBILITY
+   =================================== */
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --animation-enabled: 0;
+  }
+}
+
+/* Dark mode preference */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --preferred-theme: 'dark';
+  }
+}
+
+/* Light mode preference */
+@media (prefers-color-scheme: light) {
+  :root {
+    --preferred-theme: 'light';
+  }
+}
+
+/* High contrast preference */
+@media (prefers-contrast: high) {
+  :root {
+    --preferred-contrast: 'high';
+  }
+}
+
+/* ===================================
+   DEBUGGING HELPER
+   Add this to body::before in dev to see current breakpoint
+   =================================== */
+
+@media (min-width: 1px) {
+  body::before {
+    content: 'BP: ' var(--current-breakpoint, 'none') ' | Aspect: ' var(--current-aspect, 'none') ' | Device: ' var(--current-device, 'none');
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.8);
+    color: lime;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    font-family: monospace;
+    z-index: 9999;
+    pointer-events: none;
+    /* Uncomment to enable debug overlay */
+    /* display: block; */
+    display: none;
+  }
+}

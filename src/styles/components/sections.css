@@ -1038,7 +1038,8 @@
 }
 
 /* Fallback per progetti che non ricevono animate-in */
-.project-card:not(.animate-in) {
+/* Keep non-animated cards visible, but don't block scroll animations for cards with data-animate */
+.project-card:not([data-animate]) {
   opacity: 1 !important;
   transform: translateY(0) !important;
 }

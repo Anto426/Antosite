@@ -20,7 +20,7 @@
   contain: layout paint style;
   
   /* Hero entrance animation */
-  animation: pageReveal 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation: pageReveal 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .hero-container {
@@ -55,7 +55,7 @@
   will-change: transform;
   
   /* Logo entrance animation */
-  animation: sectionSlideIn 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s both;
+  animation: sectionSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;
 }
 
 /* Enhanced background under logo */
@@ -78,8 +78,8 @@
       rgba(var(--color-accent-rgb), 0.04) 40%,
       transparent 100%);
   border-radius: 50%;
-  filter: blur(30px);
-  opacity: 0.5;
+  filter: blur(22px);
+  opacity: 0.35;
   z-index: -2;
   animation: logo-bg-float 7s var(--animation-easing-ease) infinite;
   will-change: transform, opacity;
@@ -101,8 +101,8 @@
       rgba(var(--color-accent-rgb), 0.08) 270deg,
       rgba(var(--color-accent-rgb), 0.1) 360deg);
   border-radius: 50%;
-  filter: blur(18px);
-  opacity: 0.35;
+  filter: blur(14px);
+  opacity: 0.28;
   z-index: -1;
   animation: logo-bg-rotate 16s linear infinite;
   will-change: transform, opacity;
@@ -184,17 +184,15 @@
 /* Logo image styling */
 .logo-image {
   display: block;
-  width: clamp(280px, 45%, 420px); /* Much larger logo size */
-  height: clamp(160px, 28%, 280px); /* Responsive to container width */
+  width: clamp(220px, 28vw, 360px);
+  aspect-ratio: 1 / 1; /* garantisce forma perfettamente tonda */
   border-radius: 50%;
   object-fit: cover;
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
+  /* Rimosso backdrop-filter che può rendere l'immagine “velata” su alcuni device */
   box-shadow:
-    0 10px 28px rgba(var(--color-accent-rgb), 0.25),
-    0 6px 18px rgba(var(--color-accent-2-rgb), 0.18),
-    0 3px 12px rgba(var(--color-accent-rgb), 0.12),
-    0 0 0 2px rgba(var(--color-accent-rgb), 0.25) inset;
+    0 8px 24px rgba(var(--color-accent-rgb), 0.22),
+    0 4px 12px rgba(var(--color-accent-2-rgb), 0.16),
+    0 2px 8px rgba(var(--color-accent-rgb), 0.10);
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
               box-shadow 0.3s ease;
   will-change: transform;
@@ -203,12 +201,11 @@
 }
 
 .logo-image:hover {
-  transform: scale(1.05) translateY(-3px) translateZ(0);
+  transform: scale(1.03) translateY(-2px) translateZ(0);
   box-shadow:
-    0 14px 36px rgba(var(--color-accent-rgb), 0.3),
-    0 8px 24px rgba(var(--color-accent-2-rgb), 0.22),
-    0 5px 16px rgba(var(--color-accent-rgb), 0.16),
-    0 0 0 2px rgba(var(--color-accent-rgb), 0.3) inset;
+    0 12px 28px rgba(var(--color-accent-rgb), 0.28),
+    0 6px 18px rgba(var(--color-accent-2-rgb), 0.20),
+    0 4px 12px rgba(var(--color-accent-rgb), 0.14);
 }
 
 /* Logo overlay for shine effect */
@@ -237,10 +234,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   padding: 0;
   margin: 0;
   border: none;
   outline: none;
+  width: 100%;
 }
 
 /* Stagger children animations without HTML changes */
@@ -275,7 +274,7 @@
   
   /* Enhanced brand name animations */
   animation: 
-    textRevealUp 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s both,
+    textRevealUp 1s cubic-bezier(0.4, 0, 0.2, 1) 0.5s both,
     gradientShift 4s ease-in-out infinite 2s;
 }
 
@@ -400,6 +399,7 @@
 
   .brand-container {
     align-items: flex-start;
+    width: 100%;
   }
 
   .brand-name {
@@ -410,6 +410,14 @@
   .brand-accent {
     width: 80px;
     margin-left: 0;
+  }
+  
+  .brand-tagline {
+    text-align: left;
+  }
+  
+  .brand-status {
+    justify-content: flex-start;
   }
 }
 
@@ -430,6 +438,43 @@
 
   .brand-container {
     align-items: center;
+    width: 100%;
+  }
+
+  .brand-name {
+    text-align: center;
+    white-space: nowrap;
+  }
+  
+  .brand-tagline {
+    text-align: center;
+  }
+  
+  .brand-status {
+    justify-content: center;
+    margin-inline: auto;
+  }
+}
+
+/* Specific tablet adjustments (e.g., OnePlus Pad, iPad Pro) */
+@media (max-width: 1300px) and (min-width: 1024px) and (orientation: landscape) {
+  .hero-container {
+    gap: var(--space-10);
+    max-width: 1200px;
+  }
+
+  .logo-image {
+    width: clamp(250px, 20vw, 320px);
+    height: clamp(250px, 20vw, 320px);
+  }
+
+  .brand-name {
+    font-size: clamp(2.5rem, 3.5vw, 3.8rem);
+    text-align: center;
+  }
+
+  .brand-tagline {
+    font-size: clamp(1.1rem, 1.8vw, 1.5rem);
   }
 }
 
@@ -454,6 +499,7 @@
 
   .brand-name {
     font-size: 2rem;
+    text-align: center;
   }
 
   .brand-tagline {
@@ -473,6 +519,52 @@
 
 }
 
+/* Extra mobile centering to fix slight horizontal offset under the accent */
+@media (max-width: 767px) {
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .brand-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .brand-name {
+    width: 100%;
+    text-align: center;
+  }
+
+  .brand-accent {
+    margin-inline: auto;
+  }
+
+  .brand-tagline {
+    text-align: center;
+    width: 100%;
+  }
+
+  .brand-status {
+    display: inline-flex;
+    margin-inline: auto;
+    justify-content: center;
+  }
+
+  .weed-icon {
+    flex-shrink: 0;
+  }
+
+  .status-text {
+    text-align: center;
+  }
+}
+
 /* Small mobile */
 @media (max-width: 480px) {
   .hero-section {
@@ -486,12 +578,29 @@
     max-width: 100%;
   }
 
+  .hero-content {
+    max-width: 100%;
+    text-align: center;
+    width: 100%;
+  }
+
+  .brand-container {
+    width: 100%;
+    align-items: center;
+  }
+
   .brand-name {
     font-size: clamp(1.5rem, 6vw, 1.9rem);
+    text-align: center;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .brand-tagline {
     font-size: clamp(0.85rem, 3.5vw, 0.95rem);
+    text-align: center;
   }
 
   .logo-image {
@@ -754,11 +863,71 @@
   }
 }
 
+/* 4K UHD screens */
+@media (min-width: 2560px) {
+  .hero-section {
+    min-height: 100vh;
+  }
+
+  .hero-container {
+    max-width: 2200px;
+    gap: var(--space-20);
+    padding: 0 var(--space-8);
+  }
+
+  .logo-image {
+    width: clamp(400px, 18vw, 480px);
+    height: clamp(400px, 18vw, 480px);
+  }
+
+  .brand-name {
+    font-size: clamp(4.5rem, 4vw, 6.5rem);
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  .brand-tagline {
+    font-size: clamp(2rem, 1.5vw, 2.5rem);
+  }
+
+  .brand-status {
+    font-size: var(--font-size-xl);
+    padding: var(--space-3) var(--space-6);
+  }
+}
+
+/* 4K+ screens */
+@media (min-width: 3840px) {
+  .hero-container {
+    max-width: 3200px;
+    gap: var(--space-24);
+    padding: 0 var(--space-12);
+  }
+
+  .logo-image {
+    width: clamp(500px, 15vw, 600px);
+    height: clamp(500px, 15vw, 600px);
+  }
+
+  .brand-name {
+    font-size: clamp(6rem, 3.5vw, 8rem);
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  .brand-tagline {
+    font-size: clamp(2.5rem, 1.2vw, 3rem);
+  }
+}
+
 .weed-icon {
-  display: inline-block;
-  width: 60px;
-  height: 60px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(40px, 8vw, 60px);
+  height: clamp(40px, 8vw, 60px);
   background-color: var(--color-accent);
+  flex-shrink: 0;
   
   /* SVG usato come maschera (forma dell'icona) */
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'%3E%3Cpath d='M320 64C325.3 64 330.3 66.7 333.3 71.1C349.1 94.6 370 134.8 382.5 180.1C389.8 206.5 394.3 235.4 392.8 264.1C404.4 255.2 416.5 247.4 428.7 240.4C469.7 217.1 513.1 203.5 540.9 197.9C546.1 196.9 551.6 198.5 555.3 202.3C559 206.1 560.7 211.5 559.7 216.8C554.1 244.5 540.4 287.7 517 328.5C507.9 344.4 497.1 360.2 484.5 374.8C512.4 381.4 537 392 551.8 400.2C556.9 403 560 408.4 560 414.2C560 420 556.8 425.4 551.8 428.2C536.6 436.6 510.9 447.7 482 454.3C461.8 458.9 439.1 461.5 416.8 458.9L425.1 492.1C426.6 498.2 424.5 504.6 419.6 508.5C414.7 512.4 408 513.1 402.4 510.3L344 481.2L344 552C344 565.3 333.3 576 320 576C306.7 576 296 565.3 296 552L296 481.2L237.5 510.3C231.9 513.1 225.2 512.4 220.3 508.5C215.4 504.6 213.3 498.2 214.8 492.1L223.1 458.9C200.9 461.5 178.1 458.9 157.9 454.3C129 447.7 103.4 436.7 88.1 428.2C83 425.4 79.9 420 79.9 414.2C79.9 408.4 83.1 403 88.1 400.2L94.3 396.9C109.3 389.3 131.1 380.5 155.4 374.7C142.9 360.2 132.1 344.3 123 328.5C99.6 287.7 85.9 244.5 80.3 216.8C79.2 211.6 80.9 206.1 84.7 202.3C88.5 198.5 93.9 196.9 99.1 197.9C127 203.4 170.3 217.1 211.3 240.4C223.5 247.3 235.6 255.2 247.1 264.1C245.7 235.4 250.2 206.5 257.4 180.1C269.9 134.8 290.8 94.6 306.6 71.1L307.8 69.5C310.9 66 315.3 64 320 64z'/%3E%3C/svg%3E");
@@ -773,25 +942,64 @@
   
   /* Animazione della weed */
   animation: weedSway 4s ease-in-out infinite, weedGlow 6s ease-in-out infinite;
-  transform-origin: center bottom;
+  transform-origin: center;
   filter: drop-shadow(0 0 8px rgba(var(--color-accent-rgb), 0.3));
 }
 
 @keyframes weedSway {
-  0%, 100% { 
+  0%, 100% {
     transform: rotate(0deg) scale(1);
   }
-  25% { 
+  25% {
     transform: rotate(-8deg) scale(1.05);
   }
-  50% { 
+  50% {
     transform: rotate(0deg) scale(1.1);
   }
-  75% { 
+  75% {
     transform: rotate(8deg) scale(1.05);
   }
 }
 
+
+/* Aspect-ratio near 7:5 (catch rounding and UI bars on some devices) */
+@media (min-aspect-ratio: 130/100) and (max-aspect-ratio: 150/100) {
+  .hero-container { grid-template-columns: 1fr; justify-items: center; align-items: center; place-items: center; margin-inline: auto; animation: none !important; gap: clamp(var(--space-2), 2vh, var(--space-4)); }
+  .hero-logo { justify-content: center !important; margin-inline: auto; margin-bottom: 0; }
+  .logo-wrapper { margin-inline: auto; transform: none !important; }
+  .brand-name, .brand-tagline { text-align: center; }
+  .logo-image { aspect-ratio: 1 / 1; object-fit: contain; object-position: 50% 50%; width: clamp(300px, 24vw, 420px); }
+
+  /* Apply safer, circular glow in this range as well */
+  .hero-logo::before,
+  .hero-logo::after {
+    width: clamp(300px, 26vw, 460px);
+    height: auto;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    animation: none !important;
+  }
+  .hero-logo::before {
+    background: radial-gradient(circle at 50% 50%,
+      rgba(var(--color-accent-rgb), 0.10) 0%,
+      rgba(var(--color-accent-2-rgb), 0.06) 45%,
+      rgba(var(--color-primary-rgb), 0.04) 70%,
+      transparent 100%);
+    filter: blur(18px);
+    opacity: 0.32;
+  }
+  .hero-logo::after {
+    background: radial-gradient(circle at 50% 50%,
+      rgba(var(--color-accent-rgb), 0.08) 0%,
+      rgba(var(--color-accent-2-rgb), 0.06) 60%,
+      transparent 100%);
+    filter: blur(12px);
+    opacity: 0.24;
+  }
+}
 @keyframes weedGlow {
   0%, 100% { 
     filter: drop-shadow(0 0 8px rgba(var(--color-accent-rgb), 0.3));
@@ -819,4 +1027,318 @@
               opacity 0.3s ease;
   will-change: transform;
   backface-visibility: hidden;
+}
+
+/* Aspect-ratio specific fixes: 7:5 tablets (e.g., 3392x2400) */
+@media (aspect-ratio: 7/5) {
+  .hero-section {
+    min-height: 100dvh;
+    padding: clamp(var(--space-2), 3vh, var(--space-6)) 0;
+  }
+
+  .hero-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    gap: clamp(var(--space-2), 2vh, var(--space-4));
+    max-width: min(1200px, 92vw);
+    justify-items: center;
+    align-items: center;
+    place-items: center;
+    animation: none !important; /* evita drift in landscape */
+  }
+
+  .hero-logo { margin-bottom: 0; justify-content: center !important; margin-inline: auto; }
+  .logo-wrapper { transform: none !important; }
+
+  .logo-image {
+    width: clamp(300px, 24vw, 420px);
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    object-position: 50% 50%;
+  }
+
+  .hero-content { text-align: center; max-width: min(840px, 90vw); }
+  .brand-name { text-align: center; font-size: clamp(2.2rem, 3.8vw, 3.6rem); white-space: nowrap; }
+  .brand-tagline { max-width: 80%; margin-inline: auto; }
+  .brand-accent { width: clamp(56px, 10vw, 96px); }
+  .scroll-indicator-container { bottom: clamp(16px, 4vh, 36px); }
+  .brand-container { align-items: center; }
+
+  /* Fix glow stretch on 7:5: force circular, centered, no animation */
+  .hero-logo::before,
+  .hero-logo::after {
+    width: clamp(300px, 26vw, 460px);
+    height: auto;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    animation: none !important;
+  }
+
+  .hero-logo::before {
+    background: radial-gradient(circle at 50% 50%,
+      rgba(var(--color-accent-rgb), 0.10) 0%,
+      rgba(var(--color-accent-2-rgb), 0.06) 45%,
+      rgba(var(--color-primary-rgb), 0.04) 70%,
+      transparent 100%);
+    filter: blur(18px);
+    opacity: 0.32;
+  }
+
+  .hero-logo::after {
+    background: radial-gradient(circle at 50% 50%,
+      rgba(var(--color-accent-rgb), 0.08) 0%,
+      rgba(var(--color-accent-2-rgb), 0.06) 60%,
+      transparent 100%);
+    filter: blur(12px);
+    opacity: 0.24;
+  }
+}
+
+@media (aspect-ratio: 7/5) and (orientation: landscape) {
+  .hero-container { max-width: min(1300px, 92vw); }
+  .logo-image { width: clamp(280px, 20vw, 380px); aspect-ratio: 1 / 1; }
+  .brand-name { font-size: clamp(2.4rem, 3.5vw, 3.8rem); }
+}
+
+/* OnePlus Pad landscape fine-tune: 1292x802-866 (aspect 1.49-1.61, keyboard hidden/shown) */
+@media (min-width: 1280px) and (max-width: 1310px) and (min-height: 790px) and (max-height: 880px) and (orientation: landscape) {
+  .hero-section {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .hero-container {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto !important;
+    place-items: center !important;
+    justify-items: center !important;
+    align-items: center !important;
+    max-width: min(1300px, 92vw) !important;
+    animation: none !important;
+    gap: clamp(var(--space-3), 3vh, var(--space-5)) !important;
+    margin: auto !important;
+  }
+  .hero-logo { 
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    justify-content: center !important; 
+    justify-self: center !important;
+    margin-inline: auto !important; 
+    margin-bottom: 0 !important; 
+  }
+  .hero-content {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    text-align: center !important;
+    justify-self: center !important;
+    max-width: min(840px, 90vw) !important;
+    margin-top: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+  }
+  .logo-wrapper { transform: none !important; margin-inline: auto !important; }
+  .logo-image {
+    width: clamp(220px, 17vw, 280px) !important;
+    height: clamp(220px, 17vw, 280px) !important;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    object-position: 50% 50%;
+  }
+  .brand-container { 
+    align-items: center !important; 
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .brand-name, .brand-tagline { 
+    text-align: center !important; 
+    width: 100% !important;
+    display: block !important;
+  }
+  .brand-accent {
+    margin-inline: auto !important;
+  }
+  .hero-logo::before,
+  .hero-logo::after {
+    width: clamp(320px, 26vw, 480px);
+    height: auto;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    animation: none !important;
+  }
+  .hero-logo::before {
+    background: radial-gradient(circle at 50% 50%,
+      rgba(var(--color-accent-rgb), 0.10) 0%,
+      rgba(var(--color-accent-2-rgb), 0.06) 45%,
+      rgba(var(--color-primary-rgb), 0.04) 70%,
+      transparent 100%);
+    filter: blur(18px);
+    opacity: 0.32;
+  }
+  .hero-logo::after {
+    background: radial-gradient(circle at 50% 50%,
+      rgba(var(--color-accent-rgb), 0.08) 0%,
+      rgba(var(--color-accent-2-rgb), 0.06) 60%,
+      transparent 100%);
+    filter: blur(12px);
+    opacity: 0.24;
+  }
+}
+
+/* iPhone SE / Small portrait phones: 375x667 and similar */
+@media (min-width: 360px) and (max-width: 390px) and (min-height: 640px) and (max-height: 680px) and (orientation: portrait) {
+  .hero-section {
+    padding: 0 !important;
+    min-height: 100svh !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  .hero-container {
+    padding: var(--space-1) var(--space-2) !important;
+    gap: var(--space-2) !important;
+    max-width: 100% !important;
+    margin: auto !important;
+  }
+  
+  .hero-content {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: var(--space-1-5) !important;
+  }
+  
+  .brand-container {
+    width: 100% !important;
+    align-items: center !important;
+    gap: var(--space-1) !important;
+  }
+  
+  .brand-name {
+    font-size: clamp(1.5rem, 6vw, 1.85rem) !important;
+    text-align: center !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+  
+  .brand-accent {
+    margin-inline: auto !important;
+    width: clamp(45px, 14vw, 65px) !important;
+    margin-top: var(--space-0-5) !important;
+    margin-bottom: var(--space-0-5) !important;
+  }
+  
+  .brand-tagline {
+    font-size: clamp(0.85rem, 3.2vw, 1rem) !important;
+    text-align: center !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+  
+  .brand-status {
+    margin-inline: auto !important;
+    justify-content: center !important;
+    margin-top: var(--space-1) !important;
+    padding: var(--space-1) var(--space-2) !important;
+    font-size: clamp(0.7rem, 3vw, 0.8rem) !important;
+  }
+  
+  .weed-icon {
+    width: clamp(32px, 7vw, 45px) !important;
+    height: clamp(32px, 7vw, 45px) !important;
+  }
+  
+  .logo-image {
+    width: clamp(130px, 38vw, 170px) !important;
+    height: clamp(130px, 38vw, 170px) !important;
+  }
+  
+  .hero-logo {
+    margin-bottom: 0 !important;
+  }
+}
+
+/* OnePlus Pad portrait: 432x656 and similar (aspect ~0.66) */
+@media (min-width: 420px) and (max-width: 450px) and (min-height: 640px) and (max-height: 680px) and (orientation: portrait) {
+  .hero-section {
+    padding: 0 !important;
+    min-height: 100svh !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  .hero-container {
+    padding: var(--space-1-5) var(--space-3) !important;
+    gap: var(--space-2-5) !important;
+    max-width: 100% !important;
+    margin: auto !important;
+  }
+  
+  .hero-content {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: var(--space-1-5) !important;
+  }
+  
+  .brand-container {
+    width: 100% !important;
+    align-items: center !important;
+    gap: var(--space-1) !important;
+  }
+  
+  .brand-name {
+    font-size: clamp(1.7rem, 5.5vw, 2.1rem) !important;
+    text-align: center !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+  
+  .brand-accent {
+    margin-inline: auto !important;
+    width: clamp(52px, 13vw, 72px) !important;
+    margin-top: var(--space-0-5) !important;
+    margin-bottom: var(--space-0-5) !important;
+  }
+  
+  .brand-tagline {
+    font-size: clamp(0.95rem, 3vw, 1.1rem) !important;
+    text-align: center !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+  
+  .brand-status {
+    margin-inline: auto !important;
+    justify-content: center !important;
+    margin-top: var(--space-1-5) !important;
+    padding: var(--space-1-5) var(--space-2-5) !important;
+    font-size: clamp(0.75rem, 3vw, 0.85rem) !important;
+  }
+  
+  .weed-icon {
+    width: clamp(35px, 7vw, 48px) !important;
+    height: clamp(35px, 7vw, 48px) !important;
+  }
+  
+  .logo-image {
+    width: clamp(145px, 36vw, 185px) !important;
+    height: clamp(145px, 36vw, 185px) !important;
+  }
+  
+  .hero-logo {
+    margin-bottom: 0 !important;
+  }
 }

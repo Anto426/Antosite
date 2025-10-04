@@ -27,10 +27,14 @@
   opacity: 1 !important; /* Assicura sempre visibilità */
   visibility: visible !important; /* Previene nascondimento */
   
-  /* Enhanced project card animations */
-  animation: 
-    sectionSlideIn 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both,
-    gentleFloat 8s ease-in-out infinite 2s;
+  /* Base state before scroll animation: slight offset, then observer will add .animated class */
+  opacity: 1; /* Keep visible to prevent layout shifts */
+  transform: translateY(16px);
+  transition: transform var(--animation-duration-normal) var(--animation-easing-expo-out),
+             opacity var(--animation-duration-normal) var(--animation-easing-expo-out);
+  /* Continuous subtle effects */
+  animation: gentleFloat 8s ease-in-out infinite 2s,
+             projectGlow 4s ease-in-out infinite 1s;
 }
 
 /* remove sweeping glass highlight to avoid perceived background */
@@ -331,6 +335,82 @@
   }
 }
 
+/* Specific tablet adjustments (e.g., OnePlus Pad, iPad Pro) */
+@media (max-width: 1300px) and (min-width: 1024px) and (orientation: landscape) {
+  .projects-container {
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: var(--space-8);
+  }
+  
+  .project-card {
+    padding: clamp(var(--space-5), 4vw, var(--space-7));
+    min-height: 360px;
+  }
+  
+  .project-title {
+    font-size: clamp(1.5rem, 2.5vw, 1.8rem);
+  }
+  
+  .project-description {
+    font-size: clamp(1rem, 1.8vw, 1.1rem);
+  }
+}
+
+/* 4K UHD screens */
+@media (min-width: 2560px) {
+  .projects-container {
+    grid-template-columns: repeat(auto-fit, minmax(800px, 1fr));
+    gap: var(--space-12);
+    max-width: 3200px;
+    margin: 0 auto;
+  }
+  
+  .project-card {
+    padding: clamp(var(--space-8), 4vw, var(--space-12));
+    min-height: 420px;
+  }
+  
+  .project-title {
+    font-size: clamp(2rem, 2.5vw, 2.5rem);
+  }
+  
+  .project-description {
+    font-size: clamp(1.2rem, 1.5vw, 1.4rem);
+  }
+}
+
+/* 4K+ screens */
+@media (min-width: 3840px) {
+  .projects-container {
+    grid-template-columns: repeat(auto-fit, minmax(1000px, 1fr));
+    gap: var(--space-16);
+    max-width: 4000px;
+    margin: 0 auto;
+  }
+  
+  .project-card {
+    padding: clamp(var(--space-10), 3vw, var(--space-14));
+    min-height: 480px;
+  }
+  
+  .project-title {
+    font-size: clamp(2.5rem, 2vw, 3rem);
+  }
+  
+  .project-description {
+    font-size: clamp(1.4rem, 1.2vw, 1.6rem);
+  }
+  
+  .project-tags {
+    gap: var(--space-3);
+  }
+  
+  .project-tag {
+    font-size: var(--font-size-base);
+    padding: var(--space-2) var(--space-4);
+  }
+}
+
 /* Responsive grid adjustments */
 @media (max-width: 1024px) {
   .projects-container {
@@ -542,5 +622,32 @@
 @media (prefers-reduced-motion: reduce) {
   .text-scrolling {
     animation: none;
+  }
+}
+
+/* Project glow animation */
+@keyframes projectGlow {
+  0%, 100% {
+    box-shadow: 
+      0 8px 24px rgba(var(--color-accent-rgb), 0.15),
+      0 4px 12px rgba(var(--color-primary-rgb), 0.1);
+  }
+  50% {
+    box-shadow: 
+      0 12px 32px rgba(var(--color-accent-rgb), 0.25),
+      0 6px 16px rgba(var(--color-primary-rgb), 0.15),
+      0 0 40px rgba(var(--color-accent-rgb), 0.1);
+  }
+}
+
+/* Aspect-ratio specific fixes: 7:5 tablets */
+@media (aspect-ratio: 7/5) {
+  .projects-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-8);
+  }
+  .project-card {
+    padding: clamp(var(--space-6), 3vw, var(--space-9));
+    min-height: 360px;
   }
 }
