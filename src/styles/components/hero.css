@@ -327,6 +327,7 @@
 .brand-status {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-2);
   padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-full);
@@ -340,6 +341,9 @@
               background 0.3s ease,
               border-color 0.3s ease;
   cursor: default;
+  /* Fixed dimensions to ensure weed icon has space */
+  min-width: clamp(60px, 12vw, 80px);
+  min-height: clamp(60px, 12vw, 80px);
 }
 
 .brand-status:hover {
@@ -481,42 +485,57 @@
 /* Mobile layout */
 @media (max-width: 767px) {
   .hero-section {
-    padding: 0; /* Remove padding on mobile to maximize space */
-    min-height: 100vh;
+    padding: 0;
+    min-height: 100svh;
   }
 
   .hero-container {
-    gap: var(--space-4);
-    padding: var(--space-2) var(--space-3); /* Minimal padding on mobile */
+    gap: var(--space-2);
+    padding: var(--space-1) var(--space-2);
   }
 
-  .hero-logo { margin-bottom: var(--space-1); }
+  .hero-logo { 
+    margin-bottom: 0;
+    margin-top: 0;
+  }
 
   .logo-image {
-    width: 180px;
-    height: 180px;
+    width: clamp(110px, 32vw, 150px);
+    height: clamp(110px, 32vw, 150px);
   }
 
   .brand-name {
-    font-size: 2rem;
+    font-size: clamp(1.4rem, 5.5vw, 1.9rem);
     text-align: center;
+    margin: 0;
+  }
+  
+  .brand-accent {
+    width: clamp(42px, 12vw, 60px);
+    margin: var(--space-0-5) auto;
   }
 
   .brand-tagline {
-    font-size: 1rem;
+    font-size: clamp(0.8rem, 3.2vw, 0.95rem);
+    margin: 0;
   }
 
   .brand-status {
-    font-size: var(--font-size-xs);
-    padding: var(--space-1-5) var(--space-3);
+    margin-top: var(--space-1);
+    padding: var(--space-1-5);
+    min-width: clamp(50px, 11vw, 70px);
+    min-height: clamp(50px, 11vw, 70px);
+  }
+  
+  .weed-icon {
+    width: clamp(30px, 6.5vw, 42px);
+    height: clamp(30px, 6.5vw, 42px);
   }
 
   .scroll-mouse {
     width: 28px;
     height: 42px;
   }
-
-
 }
 
 /* Extra mobile centering to fix slight horizontal offset under the accent */
@@ -569,12 +588,12 @@
 @media (max-width: 480px) {
   .hero-section {
     padding: 0;
-    min-height: 100svh; /* Use svh for mobile browsers */
+    min-height: 100svh;
   }
 
   .hero-container {
-    padding: clamp(var(--space-1), 2vw, var(--space-2));
-    gap: clamp(var(--space-2), 3vw, var(--space-3));
+    padding: var(--space-0-5) var(--space-1-5);
+    gap: var(--space-1-5);
     max-width: 100%;
   }
 
@@ -582,35 +601,52 @@
     max-width: 100%;
     text-align: center;
     width: 100%;
+    gap: var(--space-1);
   }
 
   .brand-container {
     width: 100%;
     align-items: center;
+    gap: var(--space-0-5);
   }
 
   .brand-name {
-    font-size: clamp(1.5rem, 6vw, 1.9rem);
+    font-size: clamp(1.3rem, 5.2vw, 1.7rem);
     text-align: center;
     width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    margin: 0;
+  }
+  
+  .brand-accent {
+    width: clamp(38px, 11vw, 52px);
+    margin: var(--space-0-5) auto;
   }
 
   .brand-tagline {
-    font-size: clamp(0.85rem, 3.5vw, 0.95rem);
+    font-size: clamp(0.75rem, 3vw, 0.9rem);
     text-align: center;
+    margin: 0;
   }
 
   .logo-image {
-    width: clamp(140px, 40vw, 180px);
-    height: clamp(140px, 40vw, 180px);
+    width: clamp(95px, 30vw, 135px);
+    height: clamp(95px, 30vw, 135px);
+  }
+  
+  .hero-logo {
+    margin: 0;
   }
   
   .brand-status {
-    font-size: clamp(0.7rem, 2.8vw, 0.8rem);
-    padding: var(--space-1) var(--space-2);
+    margin-top: var(--space-0-5);
+    padding: var(--space-1);
+    min-width: clamp(44px, 10vw, 60px);
+    min-height: clamp(44px, 10vw, 60px);
+  }
+  
+  .weed-icon {
+    width: clamp(26px, 6vw, 36px);
+    height: clamp(26px, 6vw, 36px);
   }
   
   .scroll-indicator {
@@ -921,13 +957,16 @@
 }
 
 .weed-icon {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: clamp(40px, 8vw, 60px);
-  height: clamp(40px, 8vw, 60px);
+  width: clamp(36px, 7vw, 52px);
+  height: clamp(36px, 7vw, 52px);
   background-color: var(--color-accent);
   flex-shrink: 0;
+  flex-grow: 0;
+  margin: 0;
+  padding: 0;
   
   /* SVG usato come maschera (forma dell'icona) */
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'%3E%3Cpath d='M320 64C325.3 64 330.3 66.7 333.3 71.1C349.1 94.6 370 134.8 382.5 180.1C389.8 206.5 394.3 235.4 392.8 264.1C404.4 255.2 416.5 247.4 428.7 240.4C469.7 217.1 513.1 203.5 540.9 197.9C546.1 196.9 551.6 198.5 555.3 202.3C559 206.1 560.7 211.5 559.7 216.8C554.1 244.5 540.4 287.7 517 328.5C507.9 344.4 497.1 360.2 484.5 374.8C512.4 381.4 537 392 551.8 400.2C556.9 403 560 408.4 560 414.2C560 420 556.8 425.4 551.8 428.2C536.6 436.6 510.9 447.7 482 454.3C461.8 458.9 439.1 461.5 416.8 458.9L425.1 492.1C426.6 498.2 424.5 504.6 419.6 508.5C414.7 512.4 408 513.1 402.4 510.3L344 481.2L344 552C344 565.3 333.3 576 320 576C306.7 576 296 565.3 296 552L296 481.2L237.5 510.3C231.9 513.1 225.2 512.4 220.3 508.5C215.4 504.6 213.3 498.2 214.8 492.1L223.1 458.9C200.9 461.5 178.1 458.9 157.9 454.3C129 447.7 103.4 436.7 88.1 428.2C83 425.4 79.9 420 79.9 414.2C79.9 408.4 83.1 403 88.1 400.2L94.3 396.9C109.3 389.3 131.1 380.5 155.4 374.7C142.9 360.2 132.1 344.3 123 328.5C99.6 287.7 85.9 244.5 80.3 216.8C79.2 211.6 80.9 206.1 84.7 202.3C88.5 198.5 93.9 196.9 99.1 197.9C127 203.4 170.3 217.1 211.3 240.4C223.5 247.3 235.6 255.2 247.1 264.1C245.7 235.4 250.2 206.5 257.4 180.1C269.9 134.8 290.8 94.6 306.6 71.1L307.8 69.5C310.9 66 315.3 64 320 64z'/%3E%3C/svg%3E");
@@ -942,7 +981,7 @@
   
   /* Animazione della weed */
   animation: weedSway 4s ease-in-out infinite, weedGlow 6s ease-in-out infinite;
-  transform-origin: center;
+  transform-origin: center center;
   filter: drop-shadow(0 0 8px rgba(var(--color-accent-rgb), 0.3));
 }
 
@@ -1204,8 +1243,8 @@
   }
   
   .hero-container {
-    padding: var(--space-1) var(--space-2) !important;
-    gap: var(--space-2) !important;
+    padding: var(--space-0-5) var(--space-1-5) !important;
+    gap: var(--space-1) !important;
     max-width: 100% !important;
     margin: auto !important;
   }
@@ -1215,17 +1254,17 @@
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    gap: var(--space-1-5) !important;
+    gap: var(--space-0-5) !important;
   }
   
   .brand-container {
     width: 100% !important;
     align-items: center !important;
-    gap: var(--space-1) !important;
+    gap: var(--space-0-5) !important;
   }
   
   .brand-name {
-    font-size: clamp(1.5rem, 6vw, 1.85rem) !important;
+    font-size: clamp(1.25rem, 5vw, 1.6rem) !important;
     text-align: center !important;
     width: 100% !important;
     margin: 0 !important;
@@ -1233,13 +1272,13 @@
   
   .brand-accent {
     margin-inline: auto !important;
-    width: clamp(45px, 14vw, 65px) !important;
-    margin-top: var(--space-0-5) !important;
-    margin-bottom: var(--space-0-5) !important;
+    width: clamp(35px, 10vw, 50px) !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
   }
   
   .brand-tagline {
-    font-size: clamp(0.85rem, 3.2vw, 1rem) !important;
+    font-size: clamp(0.7rem, 2.8vw, 0.85rem) !important;
     text-align: center !important;
     width: 100% !important;
     margin: 0 !important;
@@ -1248,23 +1287,25 @@
   .brand-status {
     margin-inline: auto !important;
     justify-content: center !important;
-    margin-top: var(--space-1) !important;
-    padding: var(--space-1) var(--space-2) !important;
-    font-size: clamp(0.7rem, 3vw, 0.8rem) !important;
+    margin-top: var(--space-0-5) !important;
+    padding: var(--space-1) !important;
+    min-width: clamp(40px, 9vw, 55px) !important;
+    min-height: clamp(40px, 9vw, 55px) !important;
   }
   
   .weed-icon {
-    width: clamp(32px, 7vw, 45px) !important;
-    height: clamp(32px, 7vw, 45px) !important;
+    width: clamp(24px, 5.5vw, 34px) !important;
+    height: clamp(24px, 5.5vw, 34px) !important;
   }
   
   .logo-image {
-    width: clamp(130px, 38vw, 170px) !important;
-    height: clamp(130px, 38vw, 170px) !important;
+    width: clamp(85px, 28vw, 120px) !important;
+    height: clamp(85px, 28vw, 120px) !important;
   }
   
   .hero-logo {
     margin-bottom: 0 !important;
+    margin-top: 0 !important;
   }
 }
 
@@ -1279,8 +1320,8 @@
   }
   
   .hero-container {
-    padding: var(--space-1-5) var(--space-3) !important;
-    gap: var(--space-2-5) !important;
+    padding: var(--space-0-5) var(--space-2) !important;
+    gap: var(--space-1-5) !important;
     max-width: 100% !important;
     margin: auto !important;
   }
@@ -1290,17 +1331,17 @@
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    gap: var(--space-1-5) !important;
+    gap: var(--space-0-5) !important;
   }
   
   .brand-container {
     width: 100% !important;
     align-items: center !important;
-    gap: var(--space-1) !important;
+    gap: var(--space-0-5) !important;
   }
   
   .brand-name {
-    font-size: clamp(1.7rem, 5.5vw, 2.1rem) !important;
+    font-size: clamp(1.45rem, 4.8vw, 1.8rem) !important;
     text-align: center !important;
     width: 100% !important;
     margin: 0 !important;
@@ -1308,13 +1349,13 @@
   
   .brand-accent {
     margin-inline: auto !important;
-    width: clamp(52px, 13vw, 72px) !important;
-    margin-top: var(--space-0-5) !important;
-    margin-bottom: var(--space-0-5) !important;
+    width: clamp(42px, 11vw, 58px) !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
   }
   
   .brand-tagline {
-    font-size: clamp(0.95rem, 3vw, 1.1rem) !important;
+    font-size: clamp(0.8rem, 2.8vw, 0.95rem) !important;
     text-align: center !important;
     width: 100% !important;
     margin: 0 !important;
@@ -1323,22 +1364,24 @@
   .brand-status {
     margin-inline: auto !important;
     justify-content: center !important;
-    margin-top: var(--space-1-5) !important;
-    padding: var(--space-1-5) var(--space-2-5) !important;
-    font-size: clamp(0.75rem, 3vw, 0.85rem) !important;
+    margin-top: var(--space-0-5) !important;
+    padding: var(--space-1-5) !important;
+    min-width: clamp(48px, 10vw, 64px) !important;
+    min-height: clamp(48px, 10vw, 64px) !important;
   }
   
   .weed-icon {
-    width: clamp(35px, 7vw, 48px) !important;
-    height: clamp(35px, 7vw, 48px) !important;
+    width: clamp(28px, 6vw, 40px) !important;
+    height: clamp(28px, 6vw, 40px) !important;
   }
   
   .logo-image {
-    width: clamp(145px, 36vw, 185px) !important;
-    height: clamp(145px, 36vw, 185px) !important;
+    width: clamp(105px, 32vw, 150px) !important;
+    height: clamp(105px, 32vw, 150px) !important;
   }
   
   .hero-logo {
     margin-bottom: 0 !important;
+    margin-top: 0 !important;
   }
 }
