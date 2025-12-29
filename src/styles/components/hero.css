@@ -508,6 +508,8 @@
     font-size: clamp(1.4rem, 5.5vw, 1.9rem);
     text-align: center;
     margin: 0;
+    white-space: normal;
+    text-wrap: balance;
   }
   
   .brand-accent {

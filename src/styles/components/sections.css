@@ -4,7 +4,7 @@
 
 /* Advanced section styling with visual hierarchy - optimized spacing */
 .section {
-  padding: clamp(var(--space-6), 6vh, var(--space-12)) 0;
+  padding: var(--section-padding-block) var(--section-padding-inline);
   position: relative;
   opacity: 0;
   transform: translateY(50px) rotateX(5deg);
@@ -29,22 +29,27 @@
 
 /* About section - centered and prominent with generous spacing */
 .about-section {
-  padding: clamp(var(--space-8), 8vh, var(--space-14)) 0;
+  padding-block: var(--section-padding-block);
+  padding-inline: 0;
 }
 
 /* Skills section - grid optimized with comfortable spacing */
 .skills-section {
-  padding: clamp(var(--space-6), 6vh, var(--space-12)) 0;
+  padding-block: var(--section-padding-block);
+  padding-inline: 0;
 }
 
 /* Projects section - spacious layout with enhanced spacing */
 .projects-section {
-  padding: clamp(var(--space-8), 8vh, var(--space-14)) 0;
+  padding-block: var(--section-padding-block);
+  padding-inline: 0;
 }
 
 /* Social section - compact footer-like with reduced spacing */
 .social-section {
-  padding: clamp(var(--space-6), 6vh, var(--space-10)) 0 var(--space-4);
+  padding-block: var(--section-padding-block);
+  padding-bottom: clamp(var(--space-4), 4vh, var(--space-8));
+  padding-inline: 0;
 }
 
 /* Unified elegant button and link styling */
@@ -287,9 +292,10 @@
   position: relative;
   width: 100%;
   min-height: 100vh;
-  max-width: var(--container-2xl);
+  max-width: min(100%, var(--container-2xl));
   margin: 0 auto;
-  padding: 0 var(--space-4);
+  padding-inline: var(--page-padding);
+  padding-block: 0;
   background: transparent;
   overflow: visible;
 }
@@ -315,7 +321,7 @@
   .main-content {
     min-height: 500px;
     height: clamp(500px, 95vh, 750px);
-    padding: clamp(var(--space-1), 1vw, var(--space-2));
+    padding-inline: clamp(0.75rem, 2vw, 1.5rem);
   }
 }
 
@@ -345,7 +351,8 @@
   
   .about-section,
   .projects-section {
-    padding: clamp(var(--space-5), 5vh, var(--space-8)) clamp(var(--space-2), 2vw, var(--space-3));
+    padding-block: clamp(var(--space-5), 5vh, var(--space-8));
+    padding-inline: 0;
   }
 }
 
@@ -353,17 +360,17 @@
   .main-content {
     width: 100%;
     max-width: 100vw;
-    padding: var(--space-1);
+    padding-inline: clamp(0.75rem, 3vw, 1rem);
   }
   
   .section {
-    padding: var(--space-3) var(--space-2);
+    padding: var(--space-3) var(--section-padding-inline);
   }
 }
 
 /* Constrain direct children inside the container and center them */
 .main-content > * {
-  max-width: min(96%, 1600px);
+  max-width: min(100%, 1600px);
   width: 100%;
   box-sizing: border-box;
   margin-inline: auto;
@@ -382,7 +389,7 @@
 
 /* Add padding to sections after hero */
 .main-content > .hero-section ~ * {
-  padding: clamp(1.6rem, 3vw, 2.4rem);
+  padding: 0;
 }
 
 /* Remove gaps between sections */
@@ -443,6 +450,7 @@
   position: relative;
   background: transparent;
   padding: clamp(1rem, 3vw, var(--space-6));
+  padding-inline: var(--page-padding);
   max-width: min(92%, 1100px);
   margin-inline: auto;
 }
@@ -457,9 +465,9 @@
 
 /* Generic wrapper inside sections for consistent widths */
 .section-container {
-  max-width: var(--container-xl);
+  max-width: min(100%, var(--container-xl));
   margin: 0 auto;
-  padding: 0 var(--space-4);
+  padding-inline: var(--page-padding);
   text-align: center;
 }
 

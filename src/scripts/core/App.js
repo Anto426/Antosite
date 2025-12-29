@@ -3,13 +3,13 @@
  * Handles the overall application lifecycle and coordination
  */
 
-import { DOMElements } from './DOMElements.js';
-import { UIController } from './UIController.js';
-import { LoadingController } from '../components/LoadingController.js';
-import { DynamicColor } from '../utils/DynamicColor.js';
-import { FetchData } from '../utils/FetchData.js';
-import { Background } from '../components/Background.js';
-import { AnimationController } from '../utils/AnimationController.js';
+import { DOMElements } from "./DOMElements.js";
+import { UIController } from "./UIController.js";
+import { LoadingController } from "../components/LoadingController.js";
+import { DynamicColor } from "../utils/DynamicColor.js";
+import { FetchData } from "../utils/FetchData.js";
+import { Background } from "../components/Background.js";
+import { AnimationController } from "../utils/AnimationController.js";
 
 export class App {
   constructor(CONFIG) {
@@ -20,6 +20,7 @@ export class App {
     this.loadingController = new LoadingController();
     this.animationController = new AnimationController();
     this.background = null; // Store background instance for color updates
+    this.orbitLoops = new Map();
 
     // Performance optimizations
     this.isPerformanceMode = CONFIG.PERFORMANCE_MODE || false;
@@ -35,14 +36,19 @@ export class App {
 
   initPerformanceOptimizations() {
     // Throttle resize events
-    window.addEventListener('resize', this.throttledResize.bind(this), { passive: true });
+    window.addEventListener("resize", this.throttledResize.bind(this), {
+      passive: true,
+    });
 
     // Use Intersection Observer for lazy loading if supported
-    if ('IntersectionObserver' in window) {
-      this.intersectionObserver = new IntersectionObserver(this.handleIntersection.bind(this), {
-        threshold: 0.1,
-        rootMargin: '50px'
-      });
+    if ("IntersectionObserver" in window) {
+      this.intersectionObserver = new IntersectionObserver(
+        this.handleIntersection.bind(this),
+        {
+          threshold: 0.1,
+          rootMargin: "50px",
+        }
+      );
     }
 
     // Optimize scroll events
@@ -69,12 +75,12 @@ export class App {
   }
 
   handleIntersection(entries) {
-    entries.forEach(entry => {
+    entries.forEach((entry) => {
       if (entry.isIntersecting) {
         const target = entry.target;
         // Add animation classes when elements come into view
-        if (!target.classList.contains('animate-in')) {
-          target.classList.add('animate-in');
+        if (!target.classList.contains("animate-in")) {
+          target.classList.add("animate-in");
         }
       }
     });
@@ -92,7 +98,7 @@ export class App {
       }
     };
 
-    window.addEventListener('scroll', scrollHandler, { passive: true });
+    window.addEventListener("scroll", scrollHandler, { passive: true });
   }
 
   handleScroll() {
@@ -192,11 +198,17 @@ export class App {
     const skillsContainer = document.getElementById("skills-container");
     skillsContainer.innerHTML = "";
 
-    this.CONFIG.skills.forEach((skill) => {
-      const skillIconHTML = this.findLanguageIcon(skill.name) || '<i class="bi bi-code-slash"></i>';
+    skillsContainer.className = "orbit-carousel skills-orbit";
+    const track = document.createElement("div");
+    track.className = "orbit-track";
+    skillsContainer.appendChild(track);
+
+    this.CONFIG.skills.forEach((skill, index) => {
+      const skillIconHTML =
+        this.findLanguageIcon(skill.name) || '<i class="bi bi-code-slash"></i>';
 
       const skillCard = document.createElement("a");
-      skillCard.className = "skill-card";
+      skillCard.className = "skill-card orbit-item";
       skillCard.href = skill.link;
       skillCard.target = "_blank";
       skillCard.rel = "noopener noreferrer";
@@ -222,9 +234,15 @@ export class App {
         skillCard.appendChild(iconWrap);
         skillCard.appendChild(nameEl);
       }
-      
-      skillsContainer.appendChild(skillCard);
+
+      track.appendChild(skillCard);
     });
+
+    this.startOrbitLoop(
+      skillsContainer,
+      track,
+      track.querySelectorAll(".orbit-item")
+    );
   }
 
   updateSocialLinks(data) {
@@ -297,14 +315,22 @@ export class App {
     const container = document.getElementById("projects-container");
     const projectsTitle = document.getElementById("projects");
 
-    projectsTitle.innerHTML = `<i class="bi bi-archive-fill"></i> Projects (${data.public_repos || 0})`;
+    projectsTitle.innerHTML = `<i class="bi bi-archive-fill"></i> Projects (${
+      data.public_repos || 0
+    })`;
 
     container.innerHTML = "";
+    container.className = "orbit-carousel projects-orbit";
+
+    const track = document.createElement("div");
+    track.className = "orbit-track";
+    container.appendChild(track);
 
     const repos = (data.repo || []).filter((r) => !r.archived);
     if (repos.length === 0) {
+      track.style.setProperty("--count", "1");
       const empty = document.createElement("div");
-      empty.className = "project-card project-card--featured";
+      empty.className = "project-card project-card--featured orbit-item";
 
       const emptyContent = document.createElement("div");
       emptyContent.className = "project-content";
@@ -315,20 +341,33 @@ export class App {
 
       emptyContent.appendChild(emptyDesc);
       empty.appendChild(emptyContent);
-      container.appendChild(empty);
+      track.appendChild(empty);
+      this.startOrbitLoop(
+        container,
+        track,
+        track.querySelectorAll(".orbit-item")
+      );
       return;
     }
 
     // Sort by name
     repos.sort((a, b) => a.name.localeCompare(b.name));
 
-    repos.forEach((repo, index) => this.createProjectElement(repo, index, container));
+    repos.forEach((repo, index) =>
+      this.createProjectElement(repo, index, track)
+    );
+    this.startOrbitLoop(
+      container,
+      track,
+      track.querySelectorAll(".orbit-item")
+    );
   }
 
   createProjectElement(repo, index, container) {
     const card = document.createElement("div");
-    card.className = "project-card";
+    card.className = "project-card orbit-item";
     card.style.setProperty("--project-index", index.toString());
+    card.style.setProperty("--i", index.toString());
 
     // Header
     const header = document.createElement("div");
@@ -336,7 +375,9 @@ export class App {
 
     const title = document.createElement("h5");
     title.className = "project-title";
-    const titleText = repo.name ? repo.name.charAt(0).toUpperCase() + repo.name.slice(1) : "Unnamed Project";
+    const titleText = repo.name
+      ? repo.name.charAt(0).toUpperCase() + repo.name.slice(1)
+      : "Unnamed Project";
     title.textContent = titleText;
 
     // Long title marquee
@@ -372,17 +413,20 @@ export class App {
     metaRow.className = "project-meta-row";
 
     // Language
-    if (repo.language) {
-      const langItem = document.createElement("span");
-      langItem.className = "project-meta-item project-language";
-      langItem.innerHTML = `${this.findLanguageIcon(repo.language) || '<i class="bi bi-code-slash"></i>'} ${repo.language}`;
-      metaRow.appendChild(langItem);
-    }
+
+    const langItem = document.createElement("span");
+    langItem.className = "project-meta-item project-language";
+    langItem.innerHTML = `${
+      this.findLanguageIcon(repo.language) || '<i class="bi bi-code-slash"></i>'
+    } ${repo.language || "N/A"}`;
+    metaRow.appendChild(langItem);
 
     // Repository type
     const typeItem = document.createElement("span");
     typeItem.className = "project-meta-item";
-    typeItem.innerHTML = repo.fork ? `<i class="bi bi-sign-turn-right-fill"></i> Fork` : `<i class="bi bi-gem"></i> Original`;
+    typeItem.innerHTML = repo.fork
+      ? `<i class="bi bi-sign-turn-right-fill"></i> Fork`
+      : `<i class="bi bi-gem"></i> Original`;
     metaRow.appendChild(typeItem);
 
     // Last updated
@@ -390,7 +434,9 @@ export class App {
       const updateDate = new Date(repo.updated_at);
       const updateItem = document.createElement("span");
       updateItem.className = "project-meta-item";
-      updateItem.innerHTML = `<i class="bi bi-clock-history"></i> ${this.getTimeAgo(updateDate)}`;
+      updateItem.innerHTML = `<i class="bi bi-clock-history"></i> ${this.getTimeAgo(
+        updateDate
+      )}`;
       metaRow.appendChild(updateItem);
     }
 
@@ -407,14 +453,25 @@ export class App {
       stats.appendChild(s);
     };
 
-    const size = (repo.size ?? 0) > 1000 ? `${(repo.size / 1000).toFixed(1)} MB` : `${repo.size ?? 0} KB`;
+    const size =
+      (repo.size ?? 0) > 1000
+        ? `${(repo.size / 1000).toFixed(1)} MB`
+        : `${repo.size ?? 0} KB`;
     addStat(`<i class="bi bi-database"></i> ${size}`);
 
     const stars = repo.stargazers_count ?? 0;
-    addStat(`<i class="bi bi-star-fill"></i> ${stars >= 1000 ? (stars / 1000).toFixed(1) + 'k' : stars}`);
+    addStat(
+      `<i class="bi bi-star-fill"></i> ${
+        stars >= 1000 ? (stars / 1000).toFixed(1) + "k" : stars
+      }`
+    );
 
     const forks = repo.forks_count ?? 0;
-    addStat(`<i class="bi bi-git"></i> ${forks >= 1000 ? (forks / 1000).toFixed(1) + 'k' : forks}`);
+    addStat(
+      `<i class="bi bi-git"></i> ${
+        forks >= 1000 ? (forks / 1000).toFixed(1) + "k" : forks
+      }`
+    );
 
     content.appendChild(desc);
     content.appendChild(meta);
@@ -445,10 +502,67 @@ export class App {
     container.appendChild(card);
   }
 
+  updateOrbitDimensions(root, items) {
+    if (!root || !items || items.length === 0) return;
+    let maxHeight = 0;
+    items.forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      maxHeight = Math.max(maxHeight, rect.height);
+    });
+    const padding = 60;
+    const height = Math.max(200, maxHeight + padding);
+    root.style.setProperty("--orbit-height", `${height}px`);
+    root.style.height = `${height}px`;
+  }
+
+  startOrbitLoop(root, track, items) {
+    if (!items || items.length === 0) return;
+    this.stopOrbitLoop(root);
+    const gap = 20;
+    const speed = 0.8; // px per frame
+    const loopItems = Array.from(items);
+    const trackWidth =
+      loopItems.reduce((acc, el) => acc + el.getBoundingClientRect().width, 0) +
+      gap * (loopItems.length - 1);
+
+    // Duplicate items if there are too few to fill width
+    while (loopItems.length < 6) {
+      const cloneSet = Array.from(items).map((el) => el.cloneNode(true));
+      cloneSet.forEach((clone) => track.appendChild(clone));
+      loopItems.push(...cloneSet);
+    }
+
+    let offset = 0;
+
+    const step = () => {
+      offset -= speed;
+      const first = track.firstElementChild;
+      if (first) {
+        const firstWidth = first.getBoundingClientRect().width + gap;
+        if (Math.abs(offset) >= firstWidth) {
+          track.appendChild(first);
+          offset += firstWidth;
+        }
+      }
+      track.style.transform = `translateX(${offset}px)`;
+      const id = requestAnimationFrame(step);
+      this.orbitLoops.set(root, { track, id });
+    };
+
+    const id = requestAnimationFrame(step);
+    this.orbitLoops.set(root, { track, id });
+  }
+
+  stopOrbitLoop(root) {
+    const loop = this.orbitLoops.get(root);
+    if (loop && loop.id) {
+      cancelAnimationFrame(loop.id);
+    }
+    this.orbitLoops.delete(root);
+  }
+
   getTimeAgo(date) {
-    const diffDays = Math.floor(
-      (Date.now() - date) / (1000 * 60 * 60 * 24)
-    );
+    const diffDays = Math.floor((Date.now() - date) / (1000 * 60 * 60 * 24));
     if (diffDays < 1) return "today";
     if (diffDays < 2) return "yesterday";
     if (diffDays < 7) return `${diffDays}d ago`;
@@ -468,7 +582,7 @@ export class App {
       console.log("Applying theme...");
       const palette = await this.dynamicColor.applyTheme();
       console.log("Theme applied successfully", palette);
-      
+
       // Create or update background with enhanced color management
       if (this.background) {
         this.background.updateColors(palette);
@@ -479,21 +593,20 @@ export class App {
             backgroundIntensity: 0.12,
             starColorVariation: true,
             connectionColorSync: true,
-          }
+          },
         });
       }
-      
+
       UIController.showSite(this.elements, this.CONFIG);
 
       // Initialize advanced animations after site is shown
       this.animationController.init();
-      
+
       // Add data-animate attributes to elements for scroll animations
       this.setupScrollAnimationTriggers();
 
       // Initialize scroll animations after theme is applied
       this.initScrollAnimations();
-
     } catch (error) {
       console.error("Failed to apply theme:", error);
       this.handleError(error);
@@ -505,30 +618,37 @@ export class App {
    */
   setupScrollAnimationTriggers() {
     // Add animation attributes to sections
-    const sections = document.querySelectorAll('.about-section, .skills-section, .projects-section, .social-section');
+    const sections = document.querySelectorAll(
+      ".about-section, .skills-section, .projects-section, .social-section"
+    );
     sections.forEach((section, index) => {
-      section.setAttribute('data-animate', index % 2 === 0 ? 'fadeInUp' : 'slideInLeft');
-      section.setAttribute('data-delay', (index * 200).toString());
+      section.setAttribute(
+        "data-animate",
+        index % 2 === 0 ? "fadeInUp" : "slideInLeft"
+      );
+      section.setAttribute("data-delay", (index * 200).toString());
     });
 
     // Add animation attributes to cards
-    const skillCards = document.querySelectorAll('.skill-card');
+    const skillCards = document.querySelectorAll(".skill-card");
     skillCards.forEach((card, index) => {
-      card.setAttribute('data-animate', 'bounceIn');
-      card.setAttribute('data-delay', (index * 100).toString());
+      card.setAttribute("data-animate", "bounceIn");
+      card.setAttribute("data-delay", (index * 100).toString());
     });
 
-    const projectCards = document.querySelectorAll('.project-card');
+    const projectCards = document.querySelectorAll(".project-card");
     projectCards.forEach((card, index) => {
       // Usa la stessa animazione di apparizione delle altre sezioni
-      card.setAttribute('data-animate', 'fadeInUp');
-      card.setAttribute('data-delay', (index * 120).toString());
+      card.setAttribute("data-animate", "fadeInUp");
+      card.setAttribute("data-delay", (index * 120).toString());
     });
 
     // Add parallax attributes to background elements
-    const backgroundElements = document.querySelectorAll('.hero-section, .logo-wrapper');
-    backgroundElements.forEach(element => {
-      element.setAttribute('data-parallax', '0.2');
+    const backgroundElements = document.querySelectorAll(
+      ".hero-section, .logo-wrapper"
+    );
+    backgroundElements.forEach((element) => {
+      element.setAttribute("data-parallax", "0.2");
     });
   }
 
@@ -539,35 +659,39 @@ export class App {
     console.log("Initializing scroll animations...");
 
     // Elements to animate on scroll
-    const animatedElements = document.querySelectorAll('.about-section, .skills-section, .projects-section, .social-section');
+    const animatedElements = document.querySelectorAll(
+      ".about-section, .skills-section, .projects-section, .social-section"
+    );
 
     // Intersection Observer options
     const observerOptions = {
       threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
+      rootMargin: "0px 0px -50px 0px",
     };
 
     // Create observer
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('animate-in');
+          entry.target.classList.add("animate-in");
         }
       });
     }, observerOptions);
 
     // Observe all sections
-    animatedElements.forEach(element => {
+    animatedElements.forEach((element) => {
       observer.observe(element);
     });
 
     // Add click handler and visibility control for scroll indicator
-    const scrollIndicator = document.querySelector('.scroll-indicator');
+    const scrollIndicator = document.querySelector(".scroll-indicator");
     if (scrollIndicator) {
       // Click handler for smooth scrolling
-      scrollIndicator.addEventListener('click', () => {
+      scrollIndicator.addEventListener("click", () => {
         // Get all sections that can be scrolled to
-        const sections = document.querySelectorAll('.about-section, .skills-section, .projects-section, .social-section');
+        const sections = document.querySelectorAll(
+          ".about-section, .skills-section, .projects-section, .social-section"
+        );
         const currentScroll = window.pageYOffset;
         const windowHeight = window.innerHeight;
 
@@ -591,25 +715,27 @@ export class App {
 
         if (targetSection) {
           targetSection.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
+            behavior: "smooth",
+            block: "start",
           });
         }
       });
 
       // Add scroll handler to show/hide scroll indicator based on position
       const toggleScrollIndicator = () => {
-        const scrolledToBottom = window.innerHeight + window.pageYOffset >= document.body.offsetHeight - 100;
+        const scrolledToBottom =
+          window.innerHeight + window.pageYOffset >=
+          document.body.offsetHeight - 100;
         if (scrolledToBottom) {
-          scrollIndicator.style.opacity = '0';
-          scrollIndicator.style.pointerEvents = 'none';
+          scrollIndicator.style.opacity = "0";
+          scrollIndicator.style.pointerEvents = "none";
         } else {
-          scrollIndicator.style.opacity = '';
-          scrollIndicator.style.pointerEvents = '';
+          scrollIndicator.style.opacity = "";
+          scrollIndicator.style.pointerEvents = "";
         }
       };
 
-      window.addEventListener('scroll', toggleScrollIndicator);
+      window.addEventListener("scroll", toggleScrollIndicator);
       // Initial check
       setTimeout(toggleScrollIndicator, 2500); // After initial animation
     }
@@ -675,7 +801,6 @@ export class App {
 
       // Complete loading
       this.loadingController.onDataLoaded();
-
     } catch (error) {
       this.handleError(error);
     }
