@@ -245,11 +245,11 @@ export class App {
     );
   }
 
-  updateSocialLinks(data) {
+ updateSocialLinks(data) {
     const socialContainer = document.getElementById("social-container");
     socialContainer.innerHTML = "";
 
-    // Helper to extract username from URL for display purposes
+    // Helper per estrarre lo username dall'URL
     const getUsernameFromUrl = (url) => {
         try {
             const urlObj = new URL(url);
@@ -260,30 +260,35 @@ export class App {
         }
     };
 
-    // 1. Add GitHub (Always present from main profile)
-    const linksToRender = [
-        {
-            provider: "github",
-            url: data.html_url,
-            icon: "bi-github",
-            text: "GitHub",
-            username: data.login
-        }
-    ];
+    // Lista finale dei link
+    const linksToRender = [];
+    
+    // Uilizziamo un Set per tracciare i provider già aggiunti (lowercase)
+    const addedProviders = new Set();
 
-    // 2. Add Twitter/X (From main profile field)
+    // 1. Aggiungi GitHub (Sempre presente)
+    linksToRender.push({
+        provider: "github",
+        url: data.html_url,
+        icon: "bi-github",
+        text: "GitHub",
+        username: data.login
+    });
+    addedProviders.add("github");
+
+    // 2. Aggiungi Twitter/X (Dal campo principale del profilo API)
     if (data.twitter_username) {
         linksToRender.push({
             provider: "twitter",
             url: `https://twitter.com/${data.twitter_username}`,
-            icon: "bi-twitter-x",
+            icon: "bi-twitter-x", // Usa la nuova X icon
             text: "Twitter",
             username: data.twitter_username
         });
+        addedProviders.add("twitter"); // Segniamo twitter come già inserito
     }
 
-    // 3. Add Social Accounts (From /social_accounts endpoint)
-    // Map GitHub providers to Bootstrap Icons
+    // 3. Aggiungi Social Accounts (Dall'endpoint /social_accounts)
     const iconMap = {
         linkedin: "bi-linkedin",
         instagram: "bi-instagram",
@@ -292,23 +297,32 @@ export class App {
         reddit: "bi-reddit",
         twitch: "bi-twitch",
         mastodon: "bi-mastodon",
-        tiktok: "bi-tiktok"
+        tiktok: "bi-tiktok",
+        twitter: "bi-twitter-x" // Mappiamo anche qui per sicurezza
     };
 
     if (data.social_accounts && Array.isArray(data.social_accounts)) {
         data.social_accounts.forEach(account => {
             const provider = account.provider.toLowerCase();
-            linksToRender.push({
-                provider: provider,
-                url: account.url,
-                icon: iconMap[provider] || "bi-link-45deg", // Fallback icon
-                text: provider.charAt(0).toUpperCase() + provider.slice(1),
-                username: getUsernameFromUrl(account.url)
-            });
+
+            // CONTROLLO ANTIDUPLICATI:
+            // Procediamo solo se questo provider non è già stato aggiunto
+            if (!addedProviders.has(provider)) {
+                linksToRender.push({
+                    provider: provider,
+                    url: account.url,
+                    icon: iconMap[provider] || "bi-link-45deg", // Icona generica se non trovata
+                    text: provider.charAt(0).toUpperCase() + provider.slice(1),
+                    username: getUsernameFromUrl(account.url)
+                });
+                
+                // Aggiungiamo al Set per evitare futuri duplicati
+                addedProviders.add(provider);
+            }
         });
     }
 
-    // 4. Render the links
+    // 4. Renderizza i link nel DOM
     linksToRender.forEach((info) => {
         const link = document.createElement("a");
         link.className = "social-link";
