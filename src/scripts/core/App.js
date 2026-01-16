@@ -246,68 +246,91 @@ export class App {
   }
 
   updateSocialLinks(data) {
-    const extractSocialFromBio = (bio, platform) => {
-      const regexes = {
-        linkedin: /linkedin\.com\/in\/([a-zA-Z0-9_-]+)/i,
-        instagram: /instagram\.com\/([a-zA-Z0-9_.-]+)/i,
-      };
-      const match = bio && bio.match(regexes[platform]);
-      return match ? match[1] : null;
-    };
-
-    let socialContainer = document.getElementById("social-container");
+    const socialContainer = document.getElementById("social-container");
     socialContainer.innerHTML = "";
 
-    const socialLinks = {
-      twitter: {
-        username: data.twitter_username,
-        baseUrl: "https://twitter.com/",
-        icon: "bi-twitter-x",
-        text: "Twitter",
-      },
-      github: {
-        username: data.login,
-        baseUrl: "https://github.com/",
-        icon: "bi-github",
-        text: "GitHub",
-      },
-      instagram: {
-        username: extractSocialFromBio(data.bio, "instagram"),
-        baseUrl: "https://instagram.com/",
-        icon: "bi-instagram",
-        text: "Instagram",
-      },
-      linkedin: {
-        username: extractSocialFromBio(data.bio, "linkedin"),
-        baseUrl: "https://linkedin.com/in/",
-        icon: "bi-linkedin",
-        text: "LinkedIn",
-      },
+    // Helper to extract username from URL for display purposes
+    const getUsernameFromUrl = (url) => {
+        try {
+            const urlObj = new URL(url);
+            const parts = urlObj.pathname.split('/').filter(Boolean);
+            return parts.length > 0 ? parts[parts.length - 1] : "Link";
+        } catch (e) {
+            return "Link";
+        }
     };
 
-    Object.values(socialLinks).forEach((info) => {
-      if (!info.username) return;
-      const link = document.createElement("a");
-      link.className = "social-link";
-      link.href = `${info.baseUrl}${info.username}`;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
+    // 1. Add GitHub (Always present from main profile)
+    const linksToRender = [
+        {
+            provider: "github",
+            url: data.html_url,
+            icon: "bi-github",
+            text: "GitHub",
+            username: data.login
+        }
+    ];
 
-      const content = document.createElement("span");
-      content.className = "social-link-content";
+    // 2. Add Twitter/X (From main profile field)
+    if (data.twitter_username) {
+        linksToRender.push({
+            provider: "twitter",
+            url: `https://twitter.com/${data.twitter_username}`,
+            icon: "bi-twitter-x",
+            text: "Twitter",
+            username: data.twitter_username
+        });
+    }
 
-      const icon = document.createElement("span");
-      icon.className = "social-icon";
-      icon.innerHTML = `<i class="bi ${info.icon}"></i>`;
+    // 3. Add Social Accounts (From /social_accounts endpoint)
+    // Map GitHub providers to Bootstrap Icons
+    const iconMap = {
+        linkedin: "bi-linkedin",
+        instagram: "bi-instagram",
+        youtube: "bi-youtube",
+        facebook: "bi-facebook",
+        reddit: "bi-reddit",
+        twitch: "bi-twitch",
+        mastodon: "bi-mastodon",
+        tiktok: "bi-tiktok"
+    };
 
-      const text = document.createElement("span");
-      text.className = "social-text";
-      text.textContent = `${info.text} · @${info.username}`;
+    if (data.social_accounts && Array.isArray(data.social_accounts)) {
+        data.social_accounts.forEach(account => {
+            const provider = account.provider.toLowerCase();
+            linksToRender.push({
+                provider: provider,
+                url: account.url,
+                icon: iconMap[provider] || "bi-link-45deg", // Fallback icon
+                text: provider.charAt(0).toUpperCase() + provider.slice(1),
+                username: getUsernameFromUrl(account.url)
+            });
+        });
+    }
 
-      content.appendChild(icon);
-      content.appendChild(text);
-      link.appendChild(content);
-      socialContainer.appendChild(link);
+    // 4. Render the links
+    linksToRender.forEach((info) => {
+        const link = document.createElement("a");
+        link.className = "social-link";
+        link.href = info.url;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+
+        const content = document.createElement("span");
+        content.className = "social-link-content";
+
+        const icon = document.createElement("span");
+        icon.className = "social-icon";
+        icon.innerHTML = `<i class="bi ${info.icon}"></i>`;
+
+        const text = document.createElement("span");
+        text.className = "social-text";
+        text.textContent = `${info.text} · @${info.username}`;
+
+        content.appendChild(icon);
+        content.appendChild(text);
+        link.appendChild(content);
+        socialContainer.appendChild(link);
     });
   }
 
@@ -755,54 +778,60 @@ export class App {
     UIController.showError(this.elements, error.message, this.CONFIG);
   }
 
-  async init() {
-    console.log("App.init called");
+ async init() {
+    console.log("App.init called");
 
-    // Initialize and start loading controller
-    this.loadingController.init();
-    this.loadingController.setText("App.init called");
-    this.loadingController.setProgress(10);
+    this.loadingController.init();
+    this.loadingController.setText("App.init called");
+    this.loadingController.setProgress(10);
 
-    try {
-      console.log("Fetching GitHub data...");
-      this.loadingController.setText("Fetching GitHub data...");
-      this.loadingController.setProgress(25);
+    try {
+      console.log("Fetching GitHub data...");
+      this.loadingController.setText("Fetching GitHub data...");
+      this.loadingController.setProgress(25);
 
-      const data = await this.fetchData.fetchGithubData(
-        this.CONFIG.GITHUB_USERNAME
+      // 1. Fetch Main User Data
+      const data = await this.fetchData.fetchGithubData(
+        this.CONFIG.GITHUB_USERNAME
+      );
+
+      console.log("Loading repositories...");
+      this.loadingController.setText("Loading repositories...");
+      this.loadingController.setProgress(50);
+
+      // 2. Fetch Repositories
+      data.repo = await this.fetchData.fetchGithubData(
+        this.CONFIG.GITHUB_USERNAME + "/repos"
+      );
+
+      // 3. NEW: Fetch Social Accounts (The links from your profile sidebar)
+      console.log("Loading social accounts...");
+      data.social_accounts = await this.fetchData.fetchGithubData(
+        this.CONFIG.GITHUB_USERNAME + "/social_accounts"
       );
 
-      console.log("Loading repositories...");
-      this.loadingController.setText("Loading repositories...");
-      this.loadingController.setProgress(50);
+      console.log("Data fetched successfully");
+      this.loadingController.setText("Data fetched successfully");
+      this.loadingController.setProgress(70);
 
-      data.repo = await this.fetchData.fetchGithubData(
-        this.CONFIG.GITHUB_USERNAME + "/repos"
-      );
+      console.log("Processing user data...");
+      this.loadingController.setText("Processing user data...");
+      this.loadingController.setProgress(85);
 
-      console.log("Data fetched successfully");
-      this.loadingController.setText("Data fetched successfully");
-      this.loadingController.setProgress(70);
+      await this.updateUserInterface(data);
 
-      console.log("Processing user data...");
-      this.loadingController.setText("Processing user data...");
-      this.loadingController.setProgress(85);
+      console.log("Applying theme...");
+      this.loadingController.setText("Applying theme...");
+      this.loadingController.setProgress(95);
 
-      await this.updateUserInterface(data);
+      await this.applyTheme();
 
-      console.log("Applying theme...");
-      this.loadingController.setText("Applying theme...");
-      this.loadingController.setProgress(95);
+      console.log("Loading complete!");
+      this.loadingController.setText("Loading complete!");
 
-      await this.applyTheme();
-
-      console.log("Loading complete!");
-      this.loadingController.setText("Loading complete!");
-
-      // Complete loading
-      this.loadingController.onDataLoaded();
-    } catch (error) {
-      this.handleError(error);
-    }
-  }
+      this.loadingController.onDataLoaded();
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
 }
